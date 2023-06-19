@@ -118,7 +118,7 @@ int main(void){
       break;
     }
   }
-
+  free(nomes); free(precos); free(quantidades);
 
   return 0;
 }
