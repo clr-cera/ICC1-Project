@@ -119,7 +119,7 @@ int main(void){
     }
   }
   free(precos); free(quantidades);
-  for(int i = 0; i < estoque; i++)
+  for(int i = 0; i < indice; i++)
     free(nomes[i]);
   free(nomes);
   return 0;
