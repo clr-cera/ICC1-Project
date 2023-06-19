@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#define Limite 100
 /*
  Esta função insere os produtos nos vetores, 
  ela copia os valores passados para o item no indice nos vetores passados
 */
 void insere_produto(char* nome, int quantidade, float preco, char** nomes, int* quantidades, float* precos, int indice){ 
   nomes[indice] = (char *) malloc(100 * sizeof(char)); //Cria o vetor do nome dentro de nomes
-  for (int i = 0; i < 100; i++) 
+  for (int i = 0; i < Limite; i++) 
     nomes[indice][i] = nome[i]; //Copia o nome, do vetor passado (nome) para o vetor criado (nomes)
 
 
@@ -47,9 +47,9 @@ int main(void){
   float saldo = 100;
   int indice = 0; //Este é o índice para a inserção de novos produtos (o código dele)
 
-  char* nomes[100];
-  int quantidades[100];
-  float precos[100];
+  char* nomes[Limite];
+  int quantidades[Limite];
+  float precos[Limite];
 
 
   while(1){
