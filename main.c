@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 /*
  Esta função insere os produtos nos vetores, 
  ela copia os valores passados para o item no indice nos vetores passados
@@ -44,11 +45,18 @@ float venda(int codigo, float saldo, float* precos, char** nomes, int* quantidad
 
 int main(void){
   float saldo = 100;
+  int estoque;
   int indice = 0; //Este é o índice para a inserção de novos produtos (o código dele)
 
-  char* nomes[100];
-  int quantidades[100];
-  float precos[100];
+  char** nomes; //Vetores para dicionario
+  int* quantidades;
+  float* precos;
+
+  scanf("%d", &estoque); //Recebe numero de diferentes tipos de produtos
+
+  nomes = (char **) malloc(estoque * sizeof(char*)); //Aloca os vetores
+  quantidades = (int *) malloc(estoque * sizeof(int));
+  precos = (float *) malloc(estoque * sizeof(float));
 
 
   while(1){
