@@ -37,10 +37,22 @@ float venda(int codigo, float saldo, float* precos, char** nomes, int* quantidad
   
   printf("%s %.2f\n", nomes[codigo], precos[codigo]); //imprime a venda
   }
-  
   else printf("Total: %.2f\n", *total); //Se o codigo for -1 ele imprime o saldo resultante
 
   return saldo; //Retorna o saldo apos estas operações
+}
+
+//Essa função apresenta o estoque de produtos com suas
+void consulta_estoque(char **nomes, int *quantidades, int indice){
+  for(int codigo = 0; codigo<indice; codigo++){ 
+    //Apresenta na tela os valores conforme cada produto (indexado pelo código)
+    printf("%d %s %d\n", codigo, nomes[codigo], quantidades[codigo]); 
+  }
+}
+
+//Essa função apresenta o saldo total
+void consultar_saldo(int saldo){
+  printf("Saldo: %d", saldo);
 }
 
 int main(void){
@@ -54,7 +66,8 @@ int main(void){
 
   scanf("%d", &estoque); //Recebe numero de diferentes tipos de produtos
 
-  nomes = (char **) malloc(estoque * sizeof(char*)); //Aloca os vetores
+  //Alocação dos vetores:
+  nomes = (char **) malloc(estoque * sizeof(char*)); 
   quantidades = (int *) malloc(estoque * sizeof(int));
   precos = (float *) malloc(estoque * sizeof(float));
 
@@ -103,24 +116,29 @@ int main(void){
       printf("--------------------------------------------------\n"); 
     }
     
-    if(strcmp(comando, "CE")==0)
+    if(strcmp(comando, "CE")==0) // COMANDO DE CONSULTAR ESTOQUE
     {
-      //consulta_estoque(); //funcao precisa ser implementada
+      consulta_estoque(nomes, quantidades, indice); //Recebe os parametros necessários para a função void apresentar os valores
+      printf("--------------------------------------------------\n"); 
     }
     
-    if(strcmp(comando, "CS")==0)
+    if(strcmp(comando, "CS")==0) // COMANDO DE CONSULTAR SALDO
     {
-      //consulta_saldo(); //funcao precisa ser implementada
+      consulta_saldo(saldo); //O saldo é passado por paramêtro apenas para apresenta-lo na função
+      printf("--------------------------------------------------\n"); 
     }
 
-    if(strcmp(comando, "FE")==0)
+    if(strcmp(comando, "FE")==0) // COMANDO PARA FINALIZAR A EXECUÇÃO
     {
       break;
     }
   }
-  free(precos); free(quantidades);
+  //Liberação da memória alocada dinamicamente na Heap
+  free(precos); 
+  free(quantidades);
   for(int i = 0; i < indice; i++)
     free(nomes[i]);
   free(nomes);
+  
   return 0;
 }
