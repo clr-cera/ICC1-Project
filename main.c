@@ -14,8 +14,9 @@ typedef struct _produto{ //Esse é o struct para um tipo de produto
  Esta função insere os produtos nos vetores, 
  ela copia os valores passados para o item no indice nos vetores passados
 */
-void insere_produto(char* nome, int quantidade, float preco, produto* produtoPonteiro){ 
+void insere_produto(char* nome, int quantidade, float preco, produto* produtoPonteiro, int indice){ 
   produtoPonteiro->nome = (char *) malloc(100 * sizeof(char)); //Cria o vetor do nome dentro do produto
+  produtoPonteiro->codigo = indice;
   for (int i = 0; i < 100; i++) 
     produtoPonteiro->nome[i] = nome[i]; //Copia o nome, do vetor passado (nome) para o vetor criado dentro do produto
 
@@ -38,12 +39,12 @@ void modifica_preco(float preco, produto* produtoPonteiro){
 float venda(int codigo, float saldo, produto* produtoPonteiro, float* total){ //Ela recebe o codigo do produto que foi vendido, o vetor de precos e o vetor de nomes
 
   if (codigo != -1){ //Se o codigo nao for -1 ele vai vender o produto (aumentar o saldo, aumentar o total da venda, e diminuir 1 da quantidade)
-  saldo += produtoPonteiro->preco;
-  *total += produtoPonteiro->preco;
-  produtoPonteiro->quantidade -= 1;
-  
-  
-  printf("%s %.2f\n", produtoPonteiro->nome, produtoPonteiro->preco); //imprime a venda
+    if(produtoPonteiro->quantidade >= 1){
+      saldo += produtoPonteiro->preco;
+      *total += produtoPonteiro->preco;
+      produtoPonteiro->quantidade -= 1;
+      printf("%s %.2f\n", produtoPonteiro->nome, produtoPonteiro->preco); //imprime a venda
+    }
   }
   else printf("Total: %.2f\n", *total); //Se o codigo for -1 ele imprime o saldo resultante
 
@@ -63,19 +64,55 @@ void consultar_saldo(float saldo){
   printf("Saldo: %.2f\n", saldo);
 }
 
+//Essa função extrai o estoque de um arquivo .txt;
+produto* extrair_dados(int quantidade_itens){
+  if(quantidade_itens != 0){
+    FILE * arquivo;
+    arquivo = fopen("arquivo.txt", "r");//independe a existencia do arquivo, por se não houver itens o vetor é inicializador com apenas um item para depois realizar a escrita
+    produto *produtoVetor;
+    produtoVetor = (produto *)malloc(quantidade_itens*sizeof(produto)); //Criando espaço para o produto vetor do tamanho do estoque 
+    
+    for(int i = 0; i<quantidade_itens; i++){ //caso exista itens é feito a leitura de cada item e colocado no vetor
+      if((((produtoVetor[i]).nome = (char*)malloc(100*sizeof(char)))==NULL))exit(1); //caso não tenha memória disponivel, termina o programa
+      fscanf(arquivo, "%d %s %d %f", &((produtoVetor[i]).codigo), ((produtoVetor[i]).nome), &((produtoVetor[i]).quantidade), &((produtoVetor[i]).preco));
+    }
+
+    fclose(arquivo);
+    return produtoVetor;
+  
+  }else{
+    produto *produtoVetor; //caso seja a primeira execução, aloca-se um vetor com um espaço para que não se tenha um vetor vazio.
+    produtoVetor = (produto *)malloc(1*sizeof(produto)); //Criando espaço para o produto vetor do tamanho do estoque 
+    return produtoVetor;
+  }
+}
+
+//Essa função armazena os produtos do estoque no arquivo onde terá os dados do estoque;
+void salvar_dados(produto * produtoVetor, int tam_produtoVetor){
+  FILE *arquivo;
+  
+  if((arquivo = fopen("arquivo.txt", "w")) == NULL){
+    //Caso não seja possivel criar o arquivo devido a memória    
+    exit(1);
+  };
+
+  for(int i = 0; i<tam_produtoVetor; i++){ //Onde é armazenado os dados do produto;
+    fprintf(arquivo, "%d %s %d %f\n", produtoVetor[i].codigo, produtoVetor[i].nome, produtoVetor[i].quantidade, produtoVetor[i].preco);
+  }
+
+  fclose(arquivo);
+}
+
+
 int main(void){
-  float saldo = 100;
-  int estoque;
+  float saldo = 0;
   int indice = 0; //Este é o índice para a inserção de novos produtos (o código dele)
 
   produto* produtoVetor;
+  scanf("%d", &indice); //Recebe numero de diferentes tipos de produtos
+  scanf("%f", &saldo);
 
-  scanf("%d", &estoque); //Recebe numero de diferentes tipos de produtos
-
-  //Alocação do vetor:
-  produtoVetor = (produto *) malloc(estoque*sizeof(produto));
-  
-
+  produtoVetor = extrair_dados(indice);  
 
   while(1){
     char comando[3]; //apesar do comando ter apenas 2 caracteres, o computador insere o /0 no final.
@@ -85,10 +122,10 @@ int main(void){
     {
       char nome[100]; int quantidade; float preco;
       scanf("%s %d %f", nome, &quantidade, &preco); //Recebe os valores
-      
-      insere_produto(nome, quantidade, preco, &produtoVetor[indice]); //Insere os valores no vetor
+      produtoVetor = realloc(produtoVetor, (indice+1) * sizeof(produto));
+      insere_produto(nome, quantidade, preco, &produtoVetor[indice], indice); //Insere os valores no vetor
       indice++; //Aumenta o índice para a proxima inserção
-
+  
     }
     
     if(strcmp(comando, "AE")==0) // COMANDO DE AUMENTAR ESTOQUE
@@ -138,6 +175,10 @@ int main(void){
       break;
     }
   }
+  
+  //Adicionando produtos no estoque
+  salvar_dados(produtoVetor, indice);
+  
   //Liberação da memória alocada dinamicamente na Heap
   for(int i = 0; i < indice; i++)
     free(produtoVetor[i].nome);
