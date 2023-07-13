@@ -1,3 +1,5 @@
+//Feito por Renan Parpinelli Scarpin nUsp 14712188 & Arthur Ernesto de Carvalho nUsp 14559479 & Gabriel Barbosa dos Santos nUsp 14613991
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
