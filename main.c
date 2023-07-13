@@ -9,16 +9,6 @@ typedef struct _produto{ //Esse é o struct para um tipo de produto
   int codigo;
 }produto;
 
-int contador_de_linhas(FILE *fp)
-{
-  char c; int linhas = 1;
-  for(c = getc(fp); c!= EOF; c = getc(fp)){
-    if(c=='\n')
-      linhas++;
-  }
-  rewind(fp);
-  return linhas;
-}
 /*
  Esta função insere os produtos nos vetores, 
  ela copia os valores passados para o item no indice nos vetores passados
